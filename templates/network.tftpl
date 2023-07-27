@@ -1,0 +1,15 @@
+network:
+  version: 2
+  ethernets:
+    ens3:
+      addresses:
+      - ${RKE2_NODE_IP_ADDRESS}/${RKE2_NODE_NETMASK}
+      routes:
+      - to: 0.0.0.0/0
+        via: ${RKE2_NODE_GATEWAY}
+      nameservers:
+        search:
+        - internal.zespre.com
+        addresses:
+        - 1.1.1.1
+        - 8.8.4.4

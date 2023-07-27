@@ -1,0 +1,20 @@
+#cloud-config
+hostname: ${HOSTNAME}
+ssh_pwauth: True
+users:
+- name: ${RKE2_NODE_SSH_USERNAME}
+  sudo: ALL=(ALL) NOPASSWD:ALL
+  lock_passwd: false
+  passwd: ${RKE2_NODE_SSH_PASSWORD}
+write_files:
+- path: /etc/rancher/rke2/config.yaml
+  content: |
+    server: https://${RKE2_SERVER_JOIN_IP}:9345
+    token: ${RKE2_JOIN_TOKEN}
+runcmd:
+  - curl -sfL https://get.rke2.io | INSTALL_RKE2_TYPE="agent" sh -
+  - systemctl enable rke2-agent.service
+  - systemctl start rke2-agent.service
+  - sleep 10
+
+final_message: "RKE2 agent installed and ready"

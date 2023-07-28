@@ -7,7 +7,7 @@ terraform {
 }
 
 provider "libvirt" {
-  uri = "qemu+ssh://imp@frostfangs.internal.zespre.com/system?sshauth=privkey&keyfile=/Users/starbops/.ssh/id_rsa"
+  uri = var.libvirt_uri
 }
 
 resource "libvirt_pool" "rke2" {
@@ -19,14 +19,27 @@ resource "libvirt_pool" "rke2" {
 resource "libvirt_volume" "os_image" {
   name   = "os-image"
   pool   = libvirt_pool.rke2.name
-  source = var.os_image
+  source = pathexpand(var.os_image)
   format = "qcow2"
 }
 
 resource "libvirt_network" "rke2_network" {
-  name   = "rke2-network"
+  count     = var.bridge_mode ? 0 : 1
+  name      = "rke2-network"
+  addresses = ["${var.rke2_node_subnet}/${var.rke2_node_netmask}"]
+  dhcp {
+    enabled = false
+  }
+  dns {
+    enabled = true
+  }
+}
+
+resource "libvirt_network" "rke2_bridge_network" {
+  count  = var.bridge_mode ? 1 : 0
+  name   = "rke2-bridge-network"
   mode   = "bridge"
-  bridge = "br0"
+  bridge = var.bridge_name
 }
 
 resource "libvirt_volume" "rke2_server" {
@@ -66,10 +79,10 @@ resource "libvirt_domain" "domain_rke2_server" {
   cloudinit = libvirt_cloudinit_disk.server_init[count.index].id
 
   network_interface {
-    network_id = libvirt_network.rke2_network.id
-    # hostname   = "${var.rke2_server_name}-${count.index}"
-    # addresses  = [element(var.rke2_server_ips, count.index)]
-    # wait_for_lease = true
+    network_id     = var.bridge_mode ? libvirt_network.rke2_bridge_network[0].id : libvirt_network.rke2_network[0].id
+    hostname       = "${var.rke2_server_name}-${count.index}"
+    addresses      = [element(var.rke2_server_ips, count.index)]
+    wait_for_lease = false
   }
 
   console {
@@ -100,6 +113,10 @@ resource "libvirt_domain" "domain_rke2_server" {
       type     = "ssh"
       user     = var.rke2_node_ssh_username
       password = var.rke2_node_ssh_password_plain
+
+      bastion_host        = var.bastion_host
+      bastion_user        = var.bastion_user
+      bastion_private_key = file(var.ssh_private_key_path)
     }
     inline = [
       "cloud-init status --wait > /dev/null 2>&1",
@@ -143,10 +160,10 @@ resource "libvirt_domain" "domain_rke2_agent" {
   cloudinit = libvirt_cloudinit_disk.agent_init[count.index].id
 
   network_interface {
-    network_id = libvirt_network.rke2_network.id
-    # hostname   = "${var.rke2_agent_name}-${count.index}"
-    # addresses  = [element(var.rke2_agent_ips, count.index)]
-    # wait_for_lease = true
+    network_id     = var.bridge_mode ? libvirt_network.rke2_bridge_network[0].id : libvirt_network.rke2_network[0].id
+    hostname       = "${var.rke2_agent_name}-${count.index}"
+    addresses      = [element(var.rke2_agent_ips, count.index)]
+    wait_for_lease = false
   }
 
   console {
@@ -177,6 +194,10 @@ resource "libvirt_domain" "domain_rke2_agent" {
       type     = "ssh"
       user     = var.rke2_node_ssh_username
       password = var.rke2_node_ssh_password_plain
+
+      bastion_host        = var.bastion_host
+      bastion_user        = var.bastion_user
+      bastion_private_key = file(var.ssh_private_key_path)
     }
     inline = [
       "cloud-init status --wait > /dev/null 2>&1",

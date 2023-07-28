@@ -1,5 +1,25 @@
 ### Common Configuration ###
 
+variable "libvirt_uri" {
+  description = "URI of libvirtd"
+  nullable    = false
+}
+
+variable "bastion_host" {
+  description = "Bastion host IP address for accessing the resulting RKE2 cluster"
+  default     = null
+}
+
+variable "bastion_user" {
+  description = "SSH user name for the bastion host"
+  default     = null
+}
+
+variable "ssh_private_key_path" {
+  description = "SSH private key path"
+  default     = "~/.ssh/id_rsa"
+}
+
 variable "os_image" {
   description = "Base OS image for the RKE2 servers"
   default     = "https://cloud-images.ubuntu.com/focal/current/focal-server-cloudimg-amd64.img"
@@ -7,7 +27,7 @@ variable "os_image" {
 
 variable "rke2_pool_path" {
   description = "Path to the libvirt pool"
-  default     = "/home/imp/libvirt/images/terraform-provider-libvirt-pool-rke2"
+  default     = "/tmp/terraform-provider-libvirt-pool-rke2"
 }
 
 variable "rke2_node_ssh_username" {
@@ -30,14 +50,30 @@ variable "rke2_join_token" {
   default     = "thisissecret"
 }
 
+variable "bridge_mode" {
+  description = "Create RKE2 cluster in bridge mode"
+  type        = bool
+  default     = false
+}
+
+variable "bridge_name" {
+  description = "Name of the bridge"
+  default     = "br0"
+}
+
+variable "rke2_node_subnet" {
+  description = "Subnet for RKE2 nodes"
+  default     = "172.19.31.0"
+}
+
 variable "rke2_node_netmask" {
-  description = "Subnet mask for RKE2 nodes"
+  description = "Netmask for RKE2 nodes"
   default     = "24"
 }
 
 variable "rke2_node_gateway" {
   description = "Gateway for RKE2 nodes"
-  default     = "192.168.48.1"
+  default     = "172.19.31.1"
 }
 
 ### RKE2 Server Configuration ###
@@ -49,12 +85,12 @@ variable "rke2_server_name" {
 
 variable "rke2_server_vcpus" {
   description = "Number of vCPUs to assign for each RKE2 server"
-  default     = 2
+  default     = 4
 }
 
 variable "rke2_server_memory" {
   description = "Size of memory to allocate for each RKE2 server"
-  default     = "2048"
+  default     = "4096"
 }
 
 variable "rke2_server_disk" {
@@ -65,7 +101,7 @@ variable "rke2_server_disk" {
 variable "rke2_server_ips" {
   description = "List of RKE2 server IP addresses"
   type        = list(string)
-  default     = ["10.10.0.1", "10.10.0.2", "10.10.0.3"]
+  default     = ["172.19.31.10", "172.19.31.11", "172.19.31.12"]
 }
 
 ### RKE2 Agent Configuration ###
@@ -93,5 +129,5 @@ variable "rke2_agent_disk" {
 variable "rke2_agent_ips" {
   description = "List of RKE2 agent IP addresses"
   type        = list(string)
-  default     = ["10.10.10.1", "10.10.10.2"]
+  default     = ["172.19.31.20", "172.19.31.21"]
 }

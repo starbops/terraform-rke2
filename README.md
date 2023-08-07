@@ -34,6 +34,16 @@ make tf-plan
 make tf-apply
 ```
 
+Connect to one of the control plane nodes and execute the `kubectl` command to check the cluster info:
+
+```sh
+$ root@rke2-server-0:~# KUBECONFIG=/etc/rancher/rke2/rke2.yaml /var/lib/rancher/rke2/bin/kubectl cluster-info
+Kubernetes control plane is running at https://127.0.0.1:6443
+CoreDNS is running at https://127.0.0.1:6443/api/v1/namespaces/kube-system/services/rke2-coredns-rke2-coredns:udp-53/proxy
+
+To further debug and diagnose cluster problems, use 'kubectl cluster-info dump'.
+```
+
 Tearing Down
 ------------
 

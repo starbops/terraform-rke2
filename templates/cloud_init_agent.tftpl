@@ -6,6 +6,8 @@ users:
   sudo: ALL=(ALL) NOPASSWD:ALL
   lock_passwd: false
   passwd: ${RKE2_NODE_SSH_PASSWORD}
+  ssh_authorized_keys:
+  - ${RKE2_NODE_SSH_AUTHORIZED_KEY}
 write_files:
 - path: /etc/rancher/rke2/config.yaml
   content: |

@@ -1,5 +1,10 @@
 ### Common Configuration ###
 
+variable "asset_path" {
+  description = "Path for RKE2 cluster related assets in local"
+  default     = "assets"
+}
+
 variable "libvirt_uri" {
   description = "URI of libvirtd"
   nullable    = false
@@ -15,8 +20,8 @@ variable "bastion_user" {
   default     = null
 }
 
-variable "ssh_private_key_path" {
-  description = "SSH private key path"
+variable "bastion_ssh_private_key_path" {
+  description = "SSH private key path for accessing bastion"
   default     = "~/.ssh/id_rsa"
 }
 
@@ -43,6 +48,10 @@ variable "rke2_node_ssh_password_plain" {
 variable "rke2_node_ssh_password" {
   description = "SSH password for the VMs"
   default     = "$6$fs8dQUSzmh4$qNsGvfGuaOvikpPuByXSylfU.D8YbbzNYtNj0vFoI5Lj2x7jFXI1BhEl69QdPPytkvM1Vu6XpnMS9rDPrr7Uh0"
+}
+
+variable "rke2_node_ssh_authorized_key" {
+  description = "SSH public key to be added to each node"
 }
 
 variable "rke2_join_token" {

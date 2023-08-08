@@ -11,11 +11,12 @@ resource "libvirt_cloudinit_disk" "agent_init" {
   count = length(var.rke2_agent_ips)
   name  = "agent-init-${count.index}.iso"
   user_data = templatefile("${path.cwd}/templates/cloud_init_agent.tftpl", {
-    HOSTNAME               = format("%v-%v", var.rke2_agent_name, count.index)
-    RKE2_NODE_SSH_USERNAME = var.rke2_node_ssh_username
-    RKE2_NODE_SSH_PASSWORD = var.rke2_node_ssh_password
-    RKE2_SERVER_JOIN_IP    = element(var.rke2_server_ips, 0)
-    RKE2_JOIN_TOKEN        = var.rke2_join_token
+    HOSTNAME                     = format("%v-%v", var.rke2_agent_name, count.index)
+    RKE2_NODE_SSH_USERNAME       = var.rke2_node_ssh_username
+    RKE2_NODE_SSH_PASSWORD       = var.rke2_node_ssh_password
+    RKE2_NODE_SSH_AUTHORIZED_KEY = var.rke2_node_ssh_authorized_key
+    RKE2_SERVER_JOIN_IP          = element(var.rke2_server_ips, 0)
+    RKE2_JOIN_TOKEN              = var.rke2_join_token
   })
   network_config = templatefile("${path.cwd}/templates/network_config.tftpl", {
     RKE2_NODE_IP_ADDRESS = element(var.rke2_agent_ips, count.index)
@@ -71,7 +72,7 @@ resource "libvirt_domain" "domain_rke2_agent" {
 
       bastion_host        = var.bastion_host
       bastion_user        = var.bastion_user
-      bastion_private_key = file(var.ssh_private_key_path)
+      bastion_private_key = file(var.bastion_ssh_private_key_path)
     }
     inline = [
       "cloud-init status --wait > /dev/null 2>&1",

@@ -104,7 +104,7 @@ variable "rke2_server_memory" {
 
 variable "rke2_server_disk" {
   description = "Size of disk space to allocate for each RKE2 server"
-  default     = "10737418240" #10GiB
+  default     = "42949672960" # 40GiB
 }
 
 variable "rke2_server_ips" {
@@ -132,7 +132,7 @@ variable "rke2_agent_memory" {
 
 variable "rke2_agent_disk" {
   description = "Size of disk space to allocate for each RKE2 agent"
-  default     = "10737418240" #10GiB
+  default     = "42949672960" # 40GiB
 }
 
 variable "rke2_agent_ips" {

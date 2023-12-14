@@ -16,7 +16,7 @@ write_files:
     %{~ endif ~}
     token: ${RKE2_JOIN_TOKEN}
 runcmd:
-  - curl -sfL https://get.rke2.io | sh -
+  - curl -sfL https://get.rke2.io | INSTALL_RKE2_CHANNEL="${RKE2_CHANNEL}" sh -
   - systemctl enable rke2-server.service
   - systemctl start rke2-server.service
   - sleep 10

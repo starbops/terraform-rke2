@@ -59,6 +59,11 @@ variable "rke2_join_token" {
   default     = "thisissecret"
 }
 
+variable "rke2_channel" {
+  description = "RKE2 channel to install"
+  default     = "latest"
+}
+
 variable "bridge_mode" {
   description = "Create RKE2 cluster in bridge mode"
   type        = bool

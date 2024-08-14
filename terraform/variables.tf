@@ -59,9 +59,9 @@ variable "rke2_join_token" {
   default     = "thisissecret"
 }
 
-variable "rke2_channel" {
-  description = "RKE2 channel to install"
-  default     = "latest"
+variable "rke2_version" {
+  description = "RKE2 version to install"
+  default     = "v1.28.11+rke2r1"
 }
 
 variable "bridge_mode" {

@@ -17,7 +17,7 @@ resource "libvirt_cloudinit_disk" "agent_init" {
     RKE2_NODE_SSH_AUTHORIZED_KEY = var.rke2_node_ssh_authorized_key
     RKE2_SERVER_JOIN_IP          = element(var.rke2_server_ips, 0)
     RKE2_JOIN_TOKEN              = var.rke2_join_token
-    RKE2_CHANNEL                 = var.rke2_channel
+    RKE2_VERSION                 = var.rke2_version
   })
   network_config = templatefile("${path.cwd}/templates/network_config.tftpl", {
     RKE2_NODE_IP_ADDRESS = element(var.rke2_agent_ips, count.index)

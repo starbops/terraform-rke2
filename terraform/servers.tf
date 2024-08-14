@@ -18,7 +18,7 @@ resource "libvirt_cloudinit_disk" "server_init" {
     RKE2_NODE_IP_ADDRESS         = var.rke2_server_ips[count.index]
     RKE2_SERVER_JOIN_IP          = var.rke2_server_ips[0]
     RKE2_JOIN_TOKEN              = var.rke2_join_token
-    RKE2_CHANNEL                 = var.rke2_channel
+    RKE2_VERSION                 = var.rke2_version
   })
   network_config = templatefile("${path.cwd}/templates/network_config.tftpl", {
     RKE2_NODE_IP_ADDRESS = element(var.rke2_server_ips, count.index)

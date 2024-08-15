@@ -17,8 +17,7 @@ write_files:
     token: ${RKE2_JOIN_TOKEN}
 runcmd:
   - curl -sfL https://get.rke2.io | INSTALL_RKE2_VERSION="${RKE2_VERSION}" sh -
-  - systemctl enable rke2-server.service
-  - systemctl start rke2-server.service
+  - systemctl enable rke2-server.service --now
   - sleep 10
 
 final_message: "RKE2 server installed and ready"
